@@ -1,7 +1,10 @@
 import {Component} from '@angular/core';
+import {FormControl, Validators} from '@angular/forms';
 
 
 let max = 5;
+
+const EMAIL_REGEX = /^[a-zA-Z0-9.!#$%&’*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/;
 
 @Component({
   moduleId: module.id,
@@ -10,10 +13,21 @@ let max = 5;
   styleUrls: ['input-demo.css'],
 })
 export class InputDemo {
-  dividerColor: boolean;
+  floatingLabel: string = 'auto';
+  color: boolean;
   requiredField: boolean;
-  floatingLabel: boolean;
+  hideRequiredMarker: boolean;
+  ctrlDisabled = false;
+  textareaNgModelValue: string;
+
   name: string;
+  errorMessageExample1: string;
+  errorMessageExample2: string;
+  errorMessageExample3: string;
+  errorMessageExample4: string;
+  dividerColorExample1: string;
+  dividerColorExample2: string;
+  dividerColorExample3: string;
   items: any[] = [
     { value: 10 },
     { value: 20 },
@@ -22,10 +36,20 @@ export class InputDemo {
     { value: 50 },
   ];
   rows = 8;
+  formControl = new FormControl('hello', Validators.required);
+  emailFormControl = new FormControl('', [Validators.required, Validators.pattern(EMAIL_REGEX)]);
+  model = 'hello';
 
   addABunch(n: number) {
     for (let x = 0; x < n; x++) {
       this.items.push({ value: ++max });
     }
+  }
+
+  customErrorStateMatcher(c: FormControl): boolean {
+    const hasInteraction = c.dirty || c.touched;
+    const isInvalid = c.invalid;
+
+    return !!(hasInteraction && isInvalid);
   }
 }

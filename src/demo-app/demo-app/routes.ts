@@ -10,35 +10,47 @@ import {LiveAnnouncerDemo} from '../live-announcer/live-announcer-demo';
 import {ListDemo} from '../list/list-demo';
 import {IconDemo} from '../icon/icon-demo';
 import {ToolbarDemo} from '../toolbar/toolbar-demo';
-import {InputDemo} from '../input/input-demo';
 import {CheckboxDemo} from '../checkbox/checkbox-demo';
 import {OverlayDemo} from '../overlay/overlay-demo';
 import {PortalDemo} from '../portal/portal-demo';
 import {ProgressBarDemo} from '../progress-bar/progress-bar-demo';
-import {ProgressCircleDemo} from '../progress-circle/progress-circle-demo';
+import {ProgressSpinnerDemo} from '../progress-spinner/progress-spinner-demo';
 import {SelectDemo} from '../select/select-demo';
 import {SidenavDemo} from '../sidenav/sidenav-demo';
 import {SlideToggleDemo} from '../slide-toggle/slide-toggle-demo';
 import {SliderDemo} from '../slider/slider-demo';
 import {RadioDemo} from '../radio/radio-demo';
 import {CardDemo} from '../card/card-demo';
+import {ChipsDemo} from '../chips/chips-demo';
 import {MenuDemo} from '../menu/menu-demo';
 import {RippleDemo} from '../ripple/ripple-demo';
 import {DialogDemo} from '../dialog/dialog-demo';
 import {TooltipDemo} from '../tooltip/tooltip-demo';
 import {SnackBarDemo} from '../snack-bar/snack-bar-demo';
 import {TABS_DEMO_ROUTES} from '../tabs/routes';
+import {PlatformDemo} from '../platform/platform-demo';
+import {AutocompleteDemo} from '../autocomplete/autocomplete-demo';
+import {InputDemo} from '../input/input-demo';
+import {StyleDemo} from '../style/style-demo';
+import {DatepickerDemo} from '../datepicker/datepicker-demo';
+import {TableDemo} from '../table/table-demo';
+import {TypographyDemo} from '../typography/typography-demo';
+import {ExpansionDemo} from '../expansion/expansion-demo';
 
 export const DEMO_APP_ROUTES: Routes = [
   {path: '', component: Home},
+  {path: 'autocomplete', component: AutocompleteDemo},
   {path: 'button', component: ButtonDemo},
   {path: 'card', component: CardDemo},
+  {path: 'chips', component: ChipsDemo},
+  {path: 'table', component: TableDemo},
+  {path: 'datepicker', component: DatepickerDemo},
   {path: 'radio', component: RadioDemo},
   {path: 'select', component: SelectDemo},
   {path: 'sidenav', component: SidenavDemo},
   {path: 'slide-toggle', component: SlideToggleDemo},
   {path: 'slider', component: SliderDemo},
-  {path: 'progress-circle', component: ProgressCircleDemo},
+  {path: 'progress-spinner', component: ProgressSpinnerDemo},
   {path: 'progress-bar', component: ProgressBarDemo},
   {path: 'portal', component: PortalDemo},
   {path: 'overlay', component: OverlayDemo},
@@ -58,4 +70,8 @@ export const DEMO_APP_ROUTES: Routes = [
   {path: 'dialog', component: DialogDemo},
   {path: 'tooltip', component: TooltipDemo},
   {path: 'snack-bar', component: SnackBarDemo},
+  {path: 'platform', component: PlatformDemo},
+  {path: 'style', component: StyleDemo},
+  {path: 'typography', component: TypographyDemo},
+  {path: 'expansion', component: ExpansionDemo},
 ];

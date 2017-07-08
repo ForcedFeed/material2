@@ -1,12 +1,21 @@
-import {NgModule, ModuleWithProviders} from '@angular/core';
+/**
+ * @license
+ * Copyright Google Inc. All Rights Reserved.
+ *
+ * Use of this source code is governed by an MIT-style license that can be
+ * found in the LICENSE file at https://angular.io/license
+ */
+
+import {NgModule} from '@angular/core';
 
 import {
-  MdRippleModule,
-  RtlModule,
-  PortalModule,
-  OverlayModule,
   A11yModule,
-  StyleCompatibilityModule,
+  BidiModule,
+  MdCommonModule,
+  MdRippleModule,
+  ObserveContentModule,
+  OverlayModule,
+  PortalModule
 } from './core/index';
 
 import {MdButtonToggleModule} from './button-toggle/index';
@@ -20,31 +29,45 @@ import {MdSidenavModule} from './sidenav/index';
 import {MdListModule} from './list/index';
 import {MdGridListModule} from './grid-list/index';
 import {MdCardModule} from './card/index';
+import {MdChipsModule} from './chips/index';
 import {MdIconModule} from './icon/index';
-import {MdProgressCircleModule} from './progress-circle/index';
+import {MdProgressSpinnerModule} from './progress-spinner/index';
 import {MdProgressBarModule} from './progress-bar/index';
 import {MdInputModule} from './input/index';
-import {MdSnackBarModule} from './snack-bar/snack-bar';
+import {MdSnackBarModule} from './snack-bar/index';
 import {MdTabsModule} from './tabs/index';
 import {MdToolbarModule} from './toolbar/index';
 import {MdTooltipModule} from './tooltip/index';
 import {MdMenuModule} from './menu/index';
 import {MdDialogModule} from './dialog/index';
-
+import {PlatformModule} from './core/platform/index';
+import {MdAutocompleteModule} from './autocomplete/index';
+import {StyleModule} from './core/style/index';
+import {MdDatepickerModule} from './datepicker/index';
+import {MdExpansionModule} from './expansion/index';
+import {MdTableModule} from './table/index';
+import {MdSortModule} from './sort/index';
+import {MdPaginatorModule} from './paginator/index';
 
 const MATERIAL_MODULES = [
+  MdAutocompleteModule,
   MdButtonModule,
   MdButtonToggleModule,
   MdCardModule,
+  MdChipsModule,
   MdCheckboxModule,
+  MdDatepickerModule,
+  MdTableModule,
   MdDialogModule,
+  MdExpansionModule,
   MdGridListModule,
   MdIconModule,
   MdInputModule,
   MdListModule,
   MdMenuModule,
+  MdPaginatorModule,
   MdProgressBarModule,
-  MdProgressCircleModule,
+  MdProgressSpinnerModule,
   MdRadioModule,
   MdRippleModule,
   MdSelectModule,
@@ -52,59 +75,23 @@ const MATERIAL_MODULES = [
   MdSliderModule,
   MdSlideToggleModule,
   MdSnackBarModule,
+  MdSortModule,
   MdTabsModule,
   MdToolbarModule,
   MdTooltipModule,
   OverlayModule,
   PortalModule,
-  RtlModule,
+  BidiModule,
+  StyleModule,
   A11yModule,
-  StyleCompatibilityModule,
+  PlatformModule,
+  MdCommonModule,
+  ObserveContentModule
 ];
 
-@NgModule({
-  imports: [
-    MdButtonModule.forRoot(),
-    MdCardModule.forRoot(),
-    MdCheckboxModule.forRoot(),
-    MdGridListModule.forRoot(),
-    MdInputModule.forRoot(),
-    MdListModule.forRoot(),
-    MdProgressBarModule.forRoot(),
-    MdProgressCircleModule.forRoot(),
-    MdRippleModule.forRoot(),
-    MdSelectModule.forRoot(),
-    MdSidenavModule.forRoot(),
-    MdTabsModule.forRoot(),
-    MdToolbarModule.forRoot(),
-    PortalModule.forRoot(),
-    RtlModule.forRoot(),
-
-    // These modules include providers.
-    A11yModule.forRoot(),
-    MdButtonToggleModule.forRoot(),
-    MdDialogModule.forRoot(),
-    MdIconModule.forRoot(),
-    MdMenuModule.forRoot(),
-    MdRadioModule.forRoot(),
-    MdSliderModule.forRoot(),
-    MdSlideToggleModule.forRoot(),
-    MdSnackBarModule.forRoot(),
-    MdTooltipModule.forRoot(),
-    OverlayModule.forRoot(),
-    StyleCompatibilityModule.forRoot(),
-  ],
-  exports: MATERIAL_MODULES,
-})
-export class MaterialRootModule { }
-
-
+/** @deprecated */
 @NgModule({
   imports: MATERIAL_MODULES,
   exports: MATERIAL_MODULES,
 })
-export class MaterialModule {
-  static forRoot(): ModuleWithProviders {
-    return {ngModule: MaterialRootModule};
-  }
-}
+export class MaterialModule {}

@@ -1,21 +1,23 @@
 @import '../core/style/variables';
+@import '../core/a11y/a11y';
 
-
-$md-tooltip-height: 22px;
-$md-tooltip-margin: 14px;
-$md-tooltip-padding: 8px;
+$mat-tooltip-horizontal-padding: 8px;
+$mat-tooltip-max-width: 250px;
+$mat-tooltip-margin: 14px;
 
 :host {
   pointer-events: none;
 }
 
-.md-tooltip {
+.mat-tooltip {
   color: white;
-  padding: 0 $md-tooltip-padding;
   border-radius: 2px;
-  font-family: $md-font-family;
-  font-size: 10px;
-  margin: $md-tooltip-margin;
-  height: $md-tooltip-height;
-  line-height: $md-tooltip-height;
+  margin: $mat-tooltip-margin;
+  max-width: $mat-tooltip-max-width;
+  padding-left: $mat-tooltip-horizontal-padding;
+  padding-right: $mat-tooltip-horizontal-padding;
+
+  @include cdk-high-contrast {
+    outline: solid 1px;
+  }
 }

@@ -1,16 +1,26 @@
-import {Injector} from '@angular/core';
-import {MdDialogRef} from './dialog-ref';
+/**
+ * @license
+ * Copyright Google Inc. All Rights Reserved.
+ *
+ * Use of this source code is governed by an MIT-style license that can be
+ * found in the LICENSE file at https://angular.io/license
+ */
 
+import {Injector} from '@angular/core';
 
 /** Custom injector type specifically for instantiating components with a dialog. */
 export class DialogInjector implements Injector {
-  constructor(private _dialogRef: MdDialogRef<any>, private _parentInjector: Injector) { }
+  constructor(
+    private _parentInjector: Injector,
+    private _customTokens: WeakMap<any, any>) { }
 
   get(token: any, notFoundValue?: any): any {
-    if (token === MdDialogRef) {
-      return this._dialogRef;
+    const value = this._customTokens.get(token);
+
+    if (typeof value !== 'undefined') {
+      return value;
     }
 
-    return this._parentInjector.get(token, notFoundValue);
+    return this._parentInjector.get<any>(token, notFoundValue);
   }
 }

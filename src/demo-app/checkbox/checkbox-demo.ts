@@ -25,7 +25,7 @@ export class MdCheckboxDemoNestedChecklist {
       subtasks: [
         { name: 'Cook Dinner', completed: false },
         { name: 'Read the Material Design Spec', completed: false },
-        { name: 'Upgrade Application to Angular2', completed: false }
+        { name: 'Upgrade Application to Angular', completed: false }
       ]
     },
     {
@@ -41,6 +41,11 @@ export class MdCheckboxDemoNestedChecklist {
 
   allComplete(task: Task): boolean {
     let subtasks = task.subtasks;
+
+    if (!subtasks) {
+      return false;
+    }
+
     return subtasks.every(t => t.completed) ? true
         : subtasks.every(t => !t.completed) ? false
         : task.completed;

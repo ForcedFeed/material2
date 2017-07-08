@@ -1,0 +1,38 @@
+// TypeScript config file that is used to compile the e2e-app. Protractor will run all specs
+// against the e2e-app in the browser and therefore the code needs to be ES5 compatible.
+{
+  "compilerOptions": {
+    "declaration": true,
+    "emitDecoratorMetadata": true,
+    "experimentalDecorators": true,
+    // TODO(paul): Remove once Angular has been upgraded and supports noUnusedParameters in AOT.
+    "noUnusedParameters": false,
+    "strictNullChecks": true,
+    "lib": ["es6", "es2015", "dom"],
+    "module": "commonjs",
+    "moduleResolution": "node",
+    "noEmitOnError": true,
+    "noImplicitAny": true,
+    "rootDir": ".",
+    "outDir": ".",
+    "sourceMap": true,
+    "target": "es5",
+    "typeRoots": [
+      "../../node_modules/@types/!(node)"
+    ],
+    "baseUrl": "",
+    "paths": {
+      "@angular/material": ["./material"],
+      "@angular/cdk": ["./cdk"]
+    }
+  },
+  "files": [
+    "./e2e-app-module.ts",
+    "./e2e-app-types.d.ts",
+    "./main.ts",
+    "./system-config.ts"
+  ],
+  "angularCompilerOptions": {
+    "skipMetadataEmit": true
+  }
+}

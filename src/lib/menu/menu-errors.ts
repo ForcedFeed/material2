@@ -1,39 +1,39 @@
-import {MdError} from '../core';
+/**
+ * @license
+ * Copyright Google Inc. All Rights Reserved.
+ *
+ * Use of this source code is governed by an MIT-style license that can be
+ * found in the LICENSE file at https://angular.io/license
+ */
 
 /**
- * Exception thrown when menu trigger doesn't have a valid md-menu instance
+ * Throws an exception for the case when menu trigger doesn't have a valid md-menu instance
+ * @docs-private
  */
-export class MdMenuMissingError extends MdError {
-  constructor() {
-    super(`md-menu-trigger: must pass in an md-menu instance.
+export function throwMdMenuMissingError() {
+  throw Error(`md-menu-trigger: must pass in an md-menu instance.
 
     Example:
       <md-menu #menu="mdMenu"></md-menu>
-      <button [md-menu-trigger-for]="menu"></button>
-    `);
-  }
+      <button [mdMenuTriggerFor]="menu"></button>`);
 }
 
 /**
- * Exception thrown when menu's x-position value isn't valid.
+ * Throws an exception for the case when menu's x-position value isn't valid.
  * In other words, it doesn't match 'before' or 'after'.
+ * @docs-private
  */
-export class MdMenuInvalidPositionX extends MdError {
-  constructor() {
-    super(`x-position value must be either 'before' or after'.
-      Example: <md-menu x-position="before" #menu="mdMenu"></md-menu>
-    `);
-  }
+export function throwMdMenuInvalidPositionX() {
+  throw Error(`x-position value must be either 'before' or after'.
+      Example: <md-menu x-position="before" #menu="mdMenu"></md-menu>`);
 }
 
 /**
- * Exception thrown when menu's y-position value isn't valid.
+ * Throws an exception for the case when menu's y-position value isn't valid.
  * In other words, it doesn't match 'above' or 'below'.
+ * @docs-private
  */
-export class MdMenuInvalidPositionY extends MdError {
-  constructor() {
-    super(`y-position value must be either 'above' or below'.
-      Example: <md-menu y-position="above" #menu="mdMenu"></md-menu>
-    `);
-  }
+export function throwMdMenuInvalidPositionY() {
+  throw Error(`y-position value must be either 'above' or below'.
+      Example: <md-menu y-position="above" #menu="mdMenu"></md-menu>`);
 }

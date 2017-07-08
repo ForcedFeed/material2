@@ -1,85 +1,117 @@
 @import '../core/theming/theming';
-
+@import '../core/typography/typography-utils';
 
 // Applies a focus style to an md-button element for each of the supported palettes.
-@mixin _md-button-focus-color($theme) {
+@mixin _mat-button-focus-color($theme) {
   $primary: map-get($theme, primary);
   $accent: map-get($theme, accent);
   $warn: map-get($theme, warn);
 
-  &.md-primary::after {
-    background-color: md-color($primary, 0.12);
+  &.mat-primary .mat-button-focus-overlay {
+    background-color: mat-color($primary, 0.12);
   }
 
-  &.md-accent::after {
-    background-color: md-color($accent, 0.12);
+  &.mat-accent .mat-button-focus-overlay {
+    background-color: mat-color($accent, 0.12);
   }
 
-  &.md-warn::after {
-    background-color: md-color($warn, 0.12);
+  &.mat-warn .mat-button-focus-overlay {
+    background-color: mat-color($warn, 0.12);
+  }
+
+  &[disabled] .mat-button-focus-overlay {
+    background-color: transparent;
+  }
+}
+
+@mixin _mat-button-ripple-color($theme, $hue, $opacity: 0.2) {
+  $primary: map-get($theme, primary);
+  $accent: map-get($theme, accent);
+  $warn: map-get($theme, warn);
+
+  &.mat-primary .mat-ripple-element {
+    background-color: mat-color($primary, $hue, $opacity);
+  }
+
+  &.mat-accent .mat-ripple-element {
+    background-color: mat-color($accent, $hue, $opacity);
+  }
+
+  &.mat-warn .mat-ripple-element {
+    background-color: mat-color($warn, $hue, $opacity);
   }
 }
 
 // Applies a property to an md-button element for each of the supported palettes.
-@mixin _md-button-theme-color($theme, $property, $color: 'default') {
+@mixin _mat-button-theme-color($theme, $property, $color: 'default') {
   $primary: map-get($theme, primary);
   $accent: map-get($theme, accent);
   $warn: map-get($theme, warn);
   $background: map-get($theme, background);
   $foreground: map-get($theme, foreground);
 
-  &.md-primary {
-    #{$property}: md-color($primary, $color);
+  &.mat-primary {
+    #{$property}: mat-color($primary, $color);
   }
-  &.md-accent {
-    #{$property}: md-color($accent, $color);
+  &.mat-accent {
+    #{$property}: mat-color($accent, $color);
   }
-  &.md-warn {
-    #{$property}: md-color($warn, $color);
+  &.mat-warn {
+    #{$property}: mat-color($warn, $color);
   }
 
-  &.md-primary, &.md-accent, &.md-warn, &[disabled] {
+  &.mat-primary, &.mat-accent, &.mat-warn, &[disabled] {
     &[disabled] {
       $palette: if($property == 'color', $foreground, $background);
-      #{$property}: md-color($palette, disabled-button);
+      #{$property}: mat-color($palette, disabled-button);
     }
   }
 }
 
-@mixin md-button-theme($theme) {
+@mixin mat-button-theme($theme) {
   $primary: map-get($theme, primary);
   $accent: map-get($theme, accent);
   $warn: map-get($theme, warn);
   $background: map-get($theme, background);
   $foreground: map-get($theme, foreground);
 
-  [md-button], [md-icon-button], [md-raised-button], [md-fab], [md-mini-fab] {
-    &.md-button-focus {
-      @include _md-button-focus-color($theme);
-    }
-  }
-
-  [md-button], [md-icon-button] {
-    @include _md-button-theme-color($theme, 'color');
+  .mat-button, .mat-icon-button {
     background: transparent;
 
-    // Only flat buttons and icon buttons (not raised or fabs) have a hover style.
-    // Use the same visual treatment for hover as for focus.
-    &:hover {
-      @include _md-button-focus-color($theme);
-    }
+    @include _mat-button-focus-color($theme);
+    @include _mat-button-theme-color($theme, 'color');
   }
 
-  [md-raised-button], [md-fab], [md-mini-fab] {
-    @include _md-button-theme-color($theme, 'color', default-contrast);
-    @include _md-button-theme-color($theme, 'background-color');
-    background-color: md-color($background, background);
+  .mat-raised-button, .mat-fab, .mat-mini-fab {
+    // Default properties when not using any [color] value.
+    color: mat-color($foreground, text);
+    background-color: mat-color($background, raised-button);
+
+    @include _mat-button-theme-color($theme, 'color', default-contrast);
+    @include _mat-button-theme-color($theme, 'background-color');
+
+    // Add ripple effect with contrast color to buttons that don't have a focus overlay.
+    @include _mat-button-ripple-color($theme, default-contrast);
   }
 
-  [md-fab], [md-mini-fab] {
-    background-color: md-color($accent);
-    color: md-color($accent, default-contrast);
+  // Add ripple effect with default color to flat buttons, which also have a focus overlay.
+  .mat-button {
+    @include _mat-button-ripple-color($theme, default, 0.1);
+  }
+
+  // Add ripple effect with default color to the icon button. Ripple color needs to be stronger
+  // since the icon button doesn't have a focus overlay.
+  .mat-icon-button {
+    @include _mat-button-ripple-color($theme, default);
   }
 }
 
-
+@mixin mat-button-typography($config) {
+  .mat-button, .mat-raised-button, .mat-icon-button {
+    font: {
+      family: mat-font-family($config);
+      size: mat-font-size($config, button);
+      weight: mat-font-weight($config, button);
+    }
+  }
+}

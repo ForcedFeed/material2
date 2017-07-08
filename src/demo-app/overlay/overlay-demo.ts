@@ -11,6 +11,9 @@ import {
     OverlayState,
     OverlayOrigin,
     ComponentPortal,
+    // This import is only used to define a generic type. The current TypeScript version incorrectly
+    // considers such imports as unused (https://github.com/Microsoft/TypeScript/issues/14953)
+    // tslint:disable-next-line:no-unused-variable
     Portal,
     TemplatePortalDirective,
 } from '@angular/material';
@@ -26,9 +29,12 @@ import {
 export class OverlayDemo {
   nextPosition: number = 0;
   isMenuOpen: boolean = false;
+  tortelliniFillings = ['cheese and spinach', 'mushroom and broccoli'];
 
   @ViewChildren(TemplatePortalDirective) templatePortals: QueryList<Portal<any>>;
   @ViewChild(OverlayOrigin) _overlayOrigin: OverlayOrigin;
+  @ViewChild('tortelliniOrigin') tortelliniOrigin: OverlayOrigin;
+  @ViewChild('tortelliniTemplate') tortelliniTemplate: TemplatePortalDirective;
 
   constructor(public overlay: Overlay, public viewContainerRef: ViewContainerRef) { }
 
@@ -75,6 +81,21 @@ export class OverlayDemo {
     overlayRef.attach(new ComponentPortal(SpagettiPanel, this.viewContainerRef));
   }
 
+  openTortelliniPanel() {
+    let strategy = this.overlay.position()
+        .connectedTo(
+            this.tortelliniOrigin.elementRef,
+            {originX: 'start', originY: 'bottom'},
+            {overlayX: 'end', overlayY: 'top'} );
+
+    let config = new OverlayState();
+    config.positionStrategy = strategy;
+
+    let overlayRef = this.overlay.create(config);
+
+    overlayRef.attach(this.tortelliniTemplate);
+  }
+
   openPanelWithBackdrop() {
     let config = new OverlayState();
 
@@ -82,7 +103,7 @@ export class OverlayDemo {
       .global()
       .centerHorizontally();
     config.hasBackdrop = true;
-    config.backdropClass = 'md-overlay-transparent-backdrop';
+    config.backdropClass = 'cdk-overlay-transparent-backdrop';
 
     let overlayRef = this.overlay.create(config);
     overlayRef.attach(this.templatePortals.first);

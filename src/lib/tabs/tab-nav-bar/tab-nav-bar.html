@@ -1,2 +1,5 @@
-<ng-content></ng-content>
-<md-ink-bar></md-ink-bar>
+<div class="mat-tab-links" (cdkObserveContent)="_alignInkBar()">
+  <ng-content></ng-content>
+  <md-ink-bar></md-ink-bar>
+</div>
+

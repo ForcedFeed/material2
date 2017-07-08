@@ -1,9 +1,14 @@
-import {async, ComponentFixture, TestBed, fakeAsync, tick} from '@angular/core/testing';
-import {By, HAMMER_GESTURE_CONFIG} from '@angular/platform-browser';
 import {Component} from '@angular/core';
-import {MdSlideToggle, MdSlideToggleChange, MdSlideToggleModule} from './slide-toggle';
-import {FormsModule, NgControl} from '@angular/forms';
+import {By, HAMMER_GESTURE_CONFIG} from '@angular/platform-browser';
+import {
+  async, ComponentFixture, TestBed, fakeAsync, tick,
+  flushMicrotasks
+} from '@angular/core/testing';
+import {NgModel, FormsModule, ReactiveFormsModule, FormControl} from '@angular/forms';
+import {MdSlideToggle, MdSlideToggleChange, MdSlideToggleModule} from './index';
 import {TestGestureConfig} from '../slider/test-gesture-config';
+import {dispatchFakeEvent} from '@angular/cdk/testing';
+import {RIPPLE_FADE_IN_DURATION, RIPPLE_FADE_OUT_DURATION} from '../core/ripple/ripple-renderer';
 
 describe('MdSlideToggle', () => {
 
@@ -11,8 +16,8 @@ describe('MdSlideToggle', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      imports: [MdSlideToggleModule.forRoot(), FormsModule],
-      declarations: [SlideToggleTestApp, SlideToggleFormsTestApp],
+      imports: [MdSlideToggleModule, FormsModule, ReactiveFormsModule],
+      declarations: [SlideToggleTestApp, SlideToggleFormsTestApp, SlideToggleWithFormControl],
       providers: [
         {provide: HAMMER_GESTURE_CONFIG, useFactory: () => gestureConfig = new TestGestureConfig()}
       ]
@@ -27,7 +32,7 @@ describe('MdSlideToggle', () => {
     let testComponent: SlideToggleTestApp;
     let slideToggle: MdSlideToggle;
     let slideToggleElement: HTMLElement;
-    let slideToggleControl: NgControl;
+    let slideToggleModel: NgModel;
     let labelElement: HTMLLabelElement;
     let inputElement: HTMLInputElement;
 
@@ -49,34 +54,34 @@ describe('MdSlideToggle', () => {
 
       slideToggle = slideToggleDebug.componentInstance;
       slideToggleElement = slideToggleDebug.nativeElement;
-      slideToggleControl = slideToggleDebug.injector.get(NgControl);
+      slideToggleModel = slideToggleDebug.injector.get<NgModel>(NgModel);
       inputElement = fixture.debugElement.query(By.css('input')).nativeElement;
       labelElement = fixture.debugElement.query(By.css('label')).nativeElement;
     }));
 
-    // TODO(kara); update when core/testing adds fix
-    it('should update the model correctly', async(() => {
-      expect(slideToggleElement.classList).not.toContain('md-checked');
+    it('should update the model correctly', fakeAsync(() => {
+      expect(slideToggleElement.classList).not.toContain('mat-checked');
 
       testComponent.slideModel = true;
       fixture.detectChanges();
-      fixture.whenStable().then(() => {
-        fixture.detectChanges();
-        expect(slideToggleElement.classList).toContain('md-checked');
-      });
 
+      // Flush the microtasks because the forms module updates the model state asynchronously.
+      flushMicrotasks();
+
+      fixture.detectChanges();
+      expect(slideToggleElement.classList).toContain('mat-checked');
     }));
 
     it('should apply class based on color attribute', () => {
       testComponent.slideColor = 'primary';
       fixture.detectChanges();
 
-      expect(slideToggleElement.classList).toContain('md-primary');
+      expect(slideToggleElement.classList).toContain('mat-primary');
 
       testComponent.slideColor = 'accent';
       fixture.detectChanges();
 
-      expect(slideToggleElement.classList).toContain('md-accent');
+      expect(slideToggleElement.classList).toContain('mat-accent');
     });
 
     it('should correctly update the disabled property', () => {
@@ -99,12 +104,12 @@ describe('MdSlideToggle', () => {
 
     it('should set the toggle to checked on click', () => {
       expect(slideToggle.checked).toBe(false);
-      expect(slideToggleElement.classList).not.toContain('md-checked');
+      expect(slideToggleElement.classList).not.toContain('mat-checked');
 
       labelElement.click();
       fixture.detectChanges();
 
-      expect(slideToggleElement.classList).toContain('md-checked');
+      expect(slideToggleElement.classList).toContain('mat-checked');
       expect(slideToggle.checked).toBe(true);
     });
 
@@ -115,37 +120,37 @@ describe('MdSlideToggle', () => {
       // to an issue, where the click events on the slide-toggle are getting executed twice.
 
       expect(slideToggle.checked).toBe(false);
-      expect(slideToggleElement.classList).not.toContain('md-checked');
+      expect(slideToggleElement.classList).not.toContain('mat-checked');
 
       labelElement.click();
       fixture.detectChanges();
 
-      expect(slideToggleElement.classList).toContain('md-checked');
+      expect(slideToggleElement.classList).toContain('mat-checked');
       expect(slideToggle.checked).toBe(true);
       expect(testComponent.onSlideClick).toHaveBeenCalledTimes(1);
     });
 
     it('should trigger the change event properly', () => {
       expect(inputElement.checked).toBe(false);
-      expect(slideToggleElement.classList).not.toContain('md-checked');
+      expect(slideToggleElement.classList).not.toContain('mat-checked');
 
       labelElement.click();
       fixture.detectChanges();
 
       expect(inputElement.checked).toBe(true);
-      expect(slideToggleElement.classList).toContain('md-checked');
+      expect(slideToggleElement.classList).toContain('mat-checked');
       expect(testComponent.onSlideChange).toHaveBeenCalledTimes(1);
     });
 
     it('should not trigger the change event by changing the native value', async(() => {
       expect(inputElement.checked).toBe(false);
-      expect(slideToggleElement.classList).not.toContain('md-checked');
+      expect(slideToggleElement.classList).not.toContain('mat-checked');
 
       testComponent.slideChecked = true;
       fixture.detectChanges();
 
       expect(inputElement.checked).toBe(true);
-      expect(slideToggleElement.classList).toContain('md-checked');
+      expect(slideToggleElement.classList).toContain('mat-checked');
 
       // The change event shouldn't fire because the value change was not caused
       // by any interaction. Use whenStable to ensure an event isn't fired asynchronously.
@@ -156,13 +161,13 @@ describe('MdSlideToggle', () => {
 
     it('should not trigger the change event on initialization', async(() => {
       expect(inputElement.checked).toBe(false);
-      expect(slideToggleElement.classList).not.toContain('md-checked');
+      expect(slideToggleElement.classList).not.toContain('mat-checked');
 
       testComponent.slideChecked = true;
       fixture.detectChanges();
 
       expect(inputElement.checked).toBe(true);
-      expect(slideToggleElement.classList).toContain('md-checked');
+      expect(slideToggleElement.classList).toContain('mat-checked');
 
       // The change event shouldn't fire, because the native input element is not focused.
       // Use whenStable to ensure an event isn't fired asynchronously.
@@ -187,6 +192,17 @@ describe('MdSlideToggle', () => {
 
       // Once the id input is falsy, we use a default prefix with a incrementing unique number.
       expect(inputElement.id).toMatch(/md-slide-toggle-[0-9]+-input/g);
+    });
+
+    it('should forward the tabIndex to the underlying input', () => {
+      fixture.detectChanges();
+
+      expect(inputElement.tabIndex).toBe(0);
+
+      testComponent.slideTabindex = 4;
+      fixture.detectChanges();
+
+      expect(inputElement.tabIndex).toBe(4);
     });
 
     it('should forward the specified name to the input', () => {
@@ -256,73 +272,88 @@ describe('MdSlideToggle', () => {
       fixture.detectChanges();
     });
 
+    it('should show a ripple when focused by a keyboard action', fakeAsync(() => {
+      expect(slideToggleElement.querySelectorAll('.mat-ripple-element').length)
+          .toBe(0, 'Expected no ripples to be present.');
+
+      dispatchFakeEvent(inputElement, 'keydown');
+      dispatchFakeEvent(inputElement, 'focus');
+
+      tick(RIPPLE_FADE_IN_DURATION);
+
+      expect(slideToggleElement.querySelectorAll('.mat-ripple-element').length)
+          .toBe(1, 'Expected the focus ripple to be showing up.');
+
+      dispatchFakeEvent(inputElement, 'blur');
+
+      tick(RIPPLE_FADE_OUT_DURATION);
+
+      expect(slideToggleElement.querySelectorAll('.mat-ripple-element').length)
+          .toBe(0, 'Expected focus ripple to be removed.');
+    }));
+
     it('should have the correct control state initially and after interaction', () => {
       // The control should start off valid, pristine, and untouched.
-      expect(slideToggleControl.valid).toBe(true);
-      expect(slideToggleControl.pristine).toBe(true);
-      expect(slideToggleControl.touched).toBe(false);
+      expect(slideToggleModel.valid).toBe(true);
+      expect(slideToggleModel.pristine).toBe(true);
+      expect(slideToggleModel.touched).toBe(false);
 
       // After changing the value programmatically, the control should
       // become dirty (not pristine), but remain untouched.
       slideToggle.checked = true;
       fixture.detectChanges();
 
-      expect(slideToggleControl.valid).toBe(true);
-      expect(slideToggleControl.pristine).toBe(false);
-      expect(slideToggleControl.touched).toBe(false);
+      expect(slideToggleModel.valid).toBe(true);
+      expect(slideToggleModel.pristine).toBe(false);
+      expect(slideToggleModel.touched).toBe(false);
 
       // After a user interaction occurs (such as a click), the control should remain dirty and
       // now also be touched.
       labelElement.click();
       fixture.detectChanges();
 
-      expect(slideToggleControl.valid).toBe(true);
-      expect(slideToggleControl.pristine).toBe(false);
-      expect(slideToggleControl.touched).toBe(true);
+      expect(slideToggleModel.valid).toBe(true);
+      expect(slideToggleModel.pristine).toBe(false);
+      expect(slideToggleModel.touched).toBe(true);
     });
 
     it('should not set the control to touched when changing the state programmatically', () => {
       // The control should start off with being untouched.
-      expect(slideToggleControl.touched).toBe(false);
+      expect(slideToggleModel.touched).toBe(false);
 
       testComponent.slideChecked = true;
       fixture.detectChanges();
 
-      expect(slideToggleControl.touched).toBe(false);
-      expect(slideToggleElement.classList).toContain('md-checked');
+      expect(slideToggleModel.touched).toBe(false);
+      expect(slideToggleElement.classList).toContain('mat-checked');
 
       // After a user interaction occurs (such as a click), the control should remain dirty and
       // now also be touched.
       inputElement.click();
       fixture.detectChanges();
 
-      expect(slideToggleControl.touched).toBe(true);
-      expect(slideToggleElement.classList).not.toContain('md-checked');
+      expect(slideToggleModel.touched).toBe(true);
+      expect(slideToggleElement.classList).not.toContain('mat-checked');
     });
 
-    // TODO(kara): update when core/testing adds fix
-    it('should not set the control to touched when changing the model', async(() => {
+    it('should not set the control to touched when changing the model', fakeAsync(() => {
       // The control should start off with being untouched.
-      expect(slideToggleControl.touched).toBe(false);
+      expect(slideToggleModel.touched).toBe(false);
 
       testComponent.slideModel = true;
       fixture.detectChanges();
-      fixture.whenStable().then(() => {
-        fixture.detectChanges();
-        expect(slideToggleControl.touched).toBe(false);
-        expect(slideToggle.checked).toBe(true);
-        expect(slideToggleElement.classList).toContain('md-checked');
-      });
-    }));
 
-    it('should correctly set the slide-toggle to checked on focus', () => {
-      expect(slideToggleElement.classList).not.toContain('md-slide-toggle-focused');
+      // Flush the microtasks because the forms module updates the model state asynchronously.
+      flushMicrotasks();
 
-      dispatchFocusChangeEvent('focus', inputElement);
+      // The checked property has been updated from the model and now the view needs
+      // to reflect the state change.
       fixture.detectChanges();
 
-      expect(slideToggleElement.classList).toContain('md-slide-toggle-focused');
-    });
+      expect(slideToggleModel.touched).toBe(false);
+      expect(slideToggle.checked).toBe(true);
+      expect(slideToggleElement.classList).toContain('mat-checked');
+    }));
 
     it('should forward the required attribute', () => {
       testComponent.isRequired = true;
@@ -334,6 +365,45 @@ describe('MdSlideToggle', () => {
       fixture.detectChanges();
 
       expect(inputElement.required).toBe(false);
+    });
+
+    it('should focus on underlying input element when focus() is called', () => {
+      expect(document.activeElement).not.toBe(inputElement);
+
+      slideToggle.focus();
+      fixture.detectChanges();
+
+      expect(document.activeElement).toBe(inputElement);
+    });
+
+    it('should set a element class if labelPosition is set to before', () => {
+      expect(slideToggleElement.classList).not.toContain('mat-slide-toggle-label-before');
+
+      testComponent.labelPosition = 'before';
+      fixture.detectChanges();
+
+      expect(slideToggleElement.classList).toContain('mat-slide-toggle-label-before');
+    });
+
+    it('should show ripples on label mousedown', () => {
+      expect(slideToggleElement.querySelectorAll('.mat-ripple-element').length).toBe(0);
+
+      dispatchFakeEvent(labelElement, 'mousedown');
+      dispatchFakeEvent(labelElement, 'mouseup');
+
+      expect(slideToggleElement.querySelectorAll('.mat-ripple-element').length).toBe(1);
+    });
+
+    it('should not show ripples when disableRipple is set', () => {
+      testComponent.disableRipple = true;
+      fixture.detectChanges();
+
+      expect(slideToggleElement.querySelectorAll('.mat-ripple-element').length).toBe(0);
+
+      dispatchFakeEvent(labelElement, 'mousedown');
+      dispatchFakeEvent(labelElement, 'mouseup');
+
+      expect(slideToggleElement.querySelectorAll('.mat-ripple-element').length).toBe(0);
     });
 
   });
@@ -405,8 +475,9 @@ describe('MdSlideToggle', () => {
     let testComponent: SlideToggleTestApp;
     let slideToggle: MdSlideToggle;
     let slideToggleElement: HTMLElement;
-    let slideToggleControl: NgControl;
+    let slideToggleModel: NgModel;
     let slideThumbContainer: HTMLElement;
+    let inputElement: HTMLInputElement;
 
     beforeEach(async(() => {
       fixture = TestBed.createComponent(SlideToggleTestApp);
@@ -416,12 +487,14 @@ describe('MdSlideToggle', () => {
       fixture.detectChanges();
 
       let slideToggleDebug = fixture.debugElement.query(By.css('md-slide-toggle'));
-      let thumbContainerDebug = slideToggleDebug.query(By.css('.md-slide-toggle-thumb-container'));
+      let thumbContainerDebug = slideToggleDebug.query(By.css('.mat-slide-toggle-thumb-container'));
 
       slideToggle = slideToggleDebug.componentInstance;
       slideToggleElement = slideToggleDebug.nativeElement;
-      slideToggleControl = slideToggleDebug.injector.get(NgControl);
+      slideToggleModel = slideToggleDebug.injector.get<NgModel>(NgModel);
       slideThumbContainer = thumbContainerDebug.nativeElement;
+
+      inputElement = slideToggleElement.querySelector('input')!;
     }));
 
     it('should drag from start to end', fakeAsync(() => {
@@ -429,7 +502,7 @@ describe('MdSlideToggle', () => {
 
       gestureConfig.emitEventForElement('slidestart', slideThumbContainer);
 
-      expect(slideThumbContainer.classList).toContain('md-dragging');
+      expect(slideThumbContainer.classList).toContain('mat-dragging');
 
       gestureConfig.emitEventForElement('slide', slideThumbContainer, {
         deltaX: 200 // Arbitrary, large delta that will be clamped to the end of the slide-toggle.
@@ -441,7 +514,7 @@ describe('MdSlideToggle', () => {
       tick();
 
       expect(slideToggle.checked).toBe(true);
-      expect(slideThumbContainer.classList).not.toContain('md-dragging');
+      expect(slideThumbContainer.classList).not.toContain('mat-dragging');
     }));
 
     it('should drag from end to start', fakeAsync(() => {
@@ -449,7 +522,7 @@ describe('MdSlideToggle', () => {
 
       gestureConfig.emitEventForElement('slidestart', slideThumbContainer);
 
-      expect(slideThumbContainer.classList).toContain('md-dragging');
+      expect(slideThumbContainer.classList).toContain('mat-dragging');
 
       gestureConfig.emitEventForElement('slide', slideThumbContainer, {
         deltaX: -200 // Arbitrary, large delta that will be clamped to the end of the slide-toggle.
@@ -461,17 +534,17 @@ describe('MdSlideToggle', () => {
       tick();
 
       expect(slideToggle.checked).toBe(false);
-      expect(slideThumbContainer.classList).not.toContain('md-dragging');
+      expect(slideThumbContainer.classList).not.toContain('mat-dragging');
     }));
 
-    it('should not drag when disbaled', fakeAsync(() => {
+    it('should not drag when disabled', fakeAsync(() => {
       slideToggle.disabled = true;
 
       expect(slideToggle.checked).toBe(false);
 
       gestureConfig.emitEventForElement('slidestart', slideThumbContainer);
 
-      expect(slideThumbContainer.classList).not.toContain('md-dragging');
+      expect(slideThumbContainer.classList).not.toContain('mat-dragging');
 
       gestureConfig.emitEventForElement('slide', slideThumbContainer, {
         deltaX: 200 // Arbitrary, large delta that will be clamped to the end of the slide-toggle.
@@ -483,7 +556,7 @@ describe('MdSlideToggle', () => {
       tick();
 
       expect(slideToggle.checked).toBe(false);
-      expect(slideThumbContainer.classList).not.toContain('md-dragging');
+      expect(slideThumbContainer.classList).not.toContain('mat-dragging');
     }));
 
     it('should should emit a change event after drag', fakeAsync(() => {
@@ -491,7 +564,7 @@ describe('MdSlideToggle', () => {
 
       gestureConfig.emitEventForElement('slidestart', slideThumbContainer);
 
-      expect(slideThumbContainer.classList).toContain('md-dragging');
+      expect(slideThumbContainer.classList).toContain('mat-dragging');
 
       gestureConfig.emitEventForElement('slide', slideThumbContainer, {
         deltaX: 200 // Arbitrary, large delta that will be clamped to the end of the slide-toggle.
@@ -503,67 +576,131 @@ describe('MdSlideToggle', () => {
       tick();
 
       expect(slideToggle.checked).toBe(true);
-      expect(slideThumbContainer.classList).not.toContain('md-dragging');
+      expect(slideThumbContainer.classList).not.toContain('mat-dragging');
       expect(testComponent.lastEvent.checked).toBe(true);
+    }));
+
+    it('should not emit a change event when the value did not change', fakeAsync(() => {
+      expect(slideToggle.checked).toBe(false);
+
+      gestureConfig.emitEventForElement('slidestart', slideThumbContainer);
+      gestureConfig.emitEventForElement('slide', slideThumbContainer, { deltaX: 0 });
+      gestureConfig.emitEventForElement('slideend', slideThumbContainer);
+
+      // Flush the timeout for the slide ending.
+      tick();
+
+      expect(slideThumbContainer.classList).not.toContain('mat-dragging');
+      expect(slideToggle.checked).toBe(false);
+      expect(testComponent.lastEvent)
+          .toBeFalsy('Expected the slide-toggle to not emit a change event.');
+    }));
+
+    it('should update the checked property of the input', fakeAsync(() => {
+      expect(inputElement.checked).toBe(false);
+
+      gestureConfig.emitEventForElement('slidestart', slideThumbContainer);
+
+      expect(slideThumbContainer.classList).toContain('mat-dragging');
+
+      gestureConfig.emitEventForElement('slide', slideThumbContainer, {
+        deltaX: 200 // Arbitrary, large delta that will be clamped to the end of the slide-toggle.
+      });
+
+      gestureConfig.emitEventForElement('slideend', slideThumbContainer);
+      fixture.detectChanges();
+
+      expect(inputElement.checked).toBe(true);
+
+      // Flush the timeout for the slide ending.
+      tick();
+
+      expect(slideThumbContainer.classList).not.toContain('mat-dragging');
     }));
 
   });
 
-});
+  describe('with a FormControl', () => {
+    let fixture: ComponentFixture<SlideToggleWithFormControl>;
 
-/**
- * Dispatches a focus change event from an element.
- * @param eventName Name of the event, either 'focus' or 'blur'.
- * @param element The element from which the event will be dispatched.
- */
-function dispatchFocusChangeEvent(eventName: string, element: HTMLElement): void {
-  let event  = document.createEvent('Event');
-  event.initEvent(eventName, true, true);
-  element.dispatchEvent(event);
-}
+    let testComponent: SlideToggleWithFormControl;
+    let slideToggle: MdSlideToggle;
+    let inputElement: HTMLInputElement;
+
+    beforeEach(() => {
+      fixture = TestBed.createComponent(SlideToggleWithFormControl);
+      fixture.detectChanges();
+
+      testComponent = fixture.debugElement.componentInstance;
+      slideToggle = fixture.debugElement.query(By.directive(MdSlideToggle)).componentInstance;
+      inputElement = fixture.debugElement.query(By.css('input')).nativeElement;
+    });
+
+    it('should toggle the disabled state', () => {
+      expect(slideToggle.disabled).toBe(false);
+      expect(inputElement.disabled).toBe(false);
+
+      testComponent.formControl.disable();
+      fixture.detectChanges();
+
+      expect(slideToggle.disabled).toBe(true);
+      expect(inputElement.disabled).toBe(true);
+
+      testComponent.formControl.enable();
+      fixture.detectChanges();
+
+      expect(slideToggle.disabled).toBe(false);
+      expect(inputElement.disabled).toBe(false);
+    });
+  });
+});
 
 @Component({
   selector: 'slide-toggle-test-app',
   template: `
-    <md-slide-toggle [(ngModel)]="slideModel" 
+    <md-slide-toggle [(ngModel)]="slideModel"
                      [required]="isRequired"
-                     [disabled]="isDisabled" 
-                     [color]="slideColor" 
-                     [id]="slideId" 
-                     [checked]="slideChecked" 
-                     [name]="slideName" 
-                     [ariaLabel]="slideLabel"
-                     [ariaLabelledby]="slideLabelledBy" 
-                     (change)="onSlideChange($event)" 
+                     [disabled]="isDisabled"
+                     [color]="slideColor"
+                     [id]="slideId"
+                     [checked]="slideChecked"
+                     [name]="slideName"
+                     [aria-label]="slideLabel"
+                     [aria-labelledby]="slideLabelledBy"
+                     [tabIndex]="slideTabindex"
+                     [labelPosition]="labelPosition"
+                     [disableRipple]="disableRipple"
+                     (change)="onSlideChange($event)"
                      (click)="onSlideClick($event)">
-                     
+
       <span>Test Slide Toggle</span>
-      
+
     </md-slide-toggle>`,
 })
 class SlideToggleTestApp {
   isDisabled: boolean = false;
   isRequired: boolean = false;
+  disableRipple: boolean = false;
   slideModel: boolean = false;
   slideChecked: boolean = false;
   slideColor: string;
-  slideId: string;
-  slideName: string;
-  slideLabel: string;
-  slideLabelledBy: string;
+  slideId: string | null;
+  slideName: string | null;
+  slideLabel: string | null;
+  slideLabelledBy: string | null;
+  slideTabindex: number;
   lastEvent: MdSlideToggleChange;
+  labelPosition: string;
 
-  onSlideClick(event: Event) {}
-  onSlideChange(event: MdSlideToggleChange) {
-    this.lastEvent = event;
-  }
+  onSlideClick: (event?: Event) => void = () => {};
+  onSlideChange = (event: MdSlideToggleChange) => this.lastEvent = event;
 }
 
 
 @Component({
   selector: 'slide-toggle-forms-test-app',
   template: `
-    <form (ngSubmit)="isSubmitted = true">
+    <form ngNativeValidate (ngSubmit)="isSubmitted = true">
       <md-slide-toggle name="slide" ngModel [required]="isRequired">Required</md-slide-toggle>
       <button type="submit"></button>
     </form>`
@@ -571,4 +708,15 @@ class SlideToggleTestApp {
 class SlideToggleFormsTestApp {
   isSubmitted: boolean = false;
   isRequired: boolean = false;
+}
+
+
+@Component({
+  template: `
+    <md-slide-toggle [formControl]="formControl">
+      <span>Test Slide Toggle</span>
+    </md-slide-toggle>`,
+})
+class SlideToggleWithFormControl {
+  formControl = new FormControl();
 }

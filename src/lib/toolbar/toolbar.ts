@@ -1,67 +1,53 @@
+/**
+ * @license
+ * Copyright Google Inc. All Rights Reserved.
+ *
+ * Use of this source code is governed by an MIT-style license that can be
+ * found in the LICENSE file at https://angular.io/license
+ */
+
 import {
-  NgModule,
-  ModuleWithProviders,
   Component,
   ChangeDetectionStrategy,
-  Input,
   ViewEncapsulation,
   Directive,
   ElementRef,
-  Renderer
+  Renderer2,
 } from '@angular/core';
+import {CanColor, mixinColor} from '../core/common-behaviors/color';
+
 
 @Directive({
-  selector: 'md-toolbar-row'
+  selector: 'md-toolbar-row, mat-toolbar-row',
+  host: {'class': 'mat-toolbar-row'},
 })
 export class MdToolbarRow {}
 
+// Boilerplate for applying mixins to MdToolbar.
+/** @docs-private */
+export class MdToolbarBase {
+  constructor(public _renderer: Renderer2, public _elementRef: ElementRef) {}
+}
+export const _MdToolbarMixinBase = mixinColor(MdToolbarBase);
+
+
 @Component({
   moduleId: module.id,
-  selector: 'md-toolbar',
+  selector: 'md-toolbar, mat-toolbar',
   templateUrl: 'toolbar.html',
   styleUrls: ['toolbar.css'],
+  inputs: ['color'],
+  host: {
+    'class': 'mat-toolbar',
+    'role': 'toolbar'
+  },
   changeDetection: ChangeDetectionStrategy.OnPush,
   encapsulation: ViewEncapsulation.None
 })
-export class MdToolbar {
+export class MdToolbar extends _MdToolbarMixinBase implements CanColor {
 
-  private _color: string;
-
-  constructor(private elementRef: ElementRef, private renderer: Renderer) { }
-
-  @Input()
-  get color(): string {
-    return this._color;
+  constructor(renderer: Renderer2, elementRef: ElementRef) {
+    super(renderer, elementRef);
   }
 
-  set color(value: string) {
-    this._updateColor(value);
-  }
-
-  private _updateColor(newColor: string) {
-    this._setElementColor(this._color, false);
-    this._setElementColor(newColor, true);
-    this._color = newColor;
-  }
-
-  private _setElementColor(color: string, isAdd: boolean) {
-    if (color != null && color != '') {
-      this.renderer.setElementClass(this.elementRef.nativeElement, `md-${color}`, isAdd);
-    }
-  }
-
-}
-
-
-@NgModule({
-  exports: [MdToolbar, MdToolbarRow],
-  declarations: [MdToolbar, MdToolbarRow],
-})
-export class MdToolbarModule {
-  static forRoot(): ModuleWithProviders {
-    return {
-      ngModule: MdToolbarModule,
-      providers: []
-    };
-  }
 }

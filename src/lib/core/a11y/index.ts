@@ -1,19 +1,9 @@
-import {NgModule, ModuleWithProviders} from '@angular/core';
-import {FocusTrap} from './focus-trap';
-import {MdLiveAnnouncer} from './live-announcer';
-import {InteractivityChecker} from './interactivity-checker';
+/**
+ * @license
+ * Copyright Google Inc. All Rights Reserved.
+ *
+ * Use of this source code is governed by an MIT-style license that can be
+ * found in the LICENSE file at https://angular.io/license
+ */
 
-export const A11Y_PROVIDERS = [MdLiveAnnouncer, InteractivityChecker];
-
-@NgModule({
-  declarations: [FocusTrap],
-  exports: [FocusTrap],
-})
-export class A11yModule {
-  static forRoot(): ModuleWithProviders {
-    return {
-      ngModule: A11yModule,
-      providers: A11Y_PROVIDERS,
-    };
-  }
-}
+export {A11yModule} from '@angular/cdk';

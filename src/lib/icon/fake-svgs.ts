@@ -1,9 +1,16 @@
-import {
-  Response,
-  ResponseOptions} from '@angular/http';
+/**
+ * @license
+ * Copyright Google Inc. All Rights Reserved.
+ *
+ * Use of this source code is governed by an MIT-style license that can be
+ * found in the LICENSE file at https://angular.io/license
+ */
+
+import {Response, ResponseOptions} from '@angular/http';
 
 /**
  * Fake URLs and associated SVG documents used by tests.
+ * @docs-private
  */
 const FAKE_SVGS = (() => {
   const svgs = new Map<string, string>();
@@ -31,6 +38,14 @@ const FAKE_SVGS = (() => {
       </svg>
   `);
 
+  svgs.set('farm-set-3.svg', `
+      <svg>
+        <symbol id="duck">
+          <path id="quack"></path>
+        </symbol>
+      </svg>
+  `);
+
   svgs.set('arrow-set.svg', `
       <svg>
         <defs>
@@ -45,6 +60,7 @@ const FAKE_SVGS = (() => {
 
 /**
  * Returns an HTTP response for a fake SVG URL.
+ * @docs-private
  */
 export function getFakeSvgHttpResponse(url: string) {
   if (FAKE_SVGS.has(url)) {

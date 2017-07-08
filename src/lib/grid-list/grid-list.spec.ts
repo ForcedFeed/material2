@@ -1,14 +1,14 @@
 import {async, TestBed} from '@angular/core/testing';
 import {Component, DebugElement} from '@angular/core';
 import {By} from '@angular/platform-browser';
-import {MdGridList, MdGridListModule} from './grid-list';
+import {MdGridList, MdGridListModule} from './index';
 import {MdGridTile, MdGridTileText} from './grid-tile';
 
 
 describe('MdGridList', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      imports: [MdGridListModule.forRoot()],
+      imports: [MdGridListModule],
       declarations: [
         GridListWithoutCols,
         GridListWithInvalidRowHeightRatio,
@@ -243,7 +243,7 @@ describe('MdGridList', () => {
     fixture.detectChanges();
 
     let footer = fixture.debugElement.query(By.directive(MdGridTileText));
-    expect(footer.nativeElement.classList.contains('md-2-line')).toBe(false);
+    expect(footer.nativeElement.classList.contains('mat-2-line')).toBe(false);
   });
 
   it('should add class to footers with two lines', () => {
@@ -251,7 +251,7 @@ describe('MdGridList', () => {
     fixture.detectChanges();
 
     let footer = fixture.debugElement.query(By.directive(MdGridTileText));
-    expect(footer.nativeElement.classList.contains('md-2-line')).toBe(true);
+    expect(footer.nativeElement.classList.contains('mat-2-line')).toBe(true);
   });
 });
 

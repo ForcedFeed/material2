@@ -1,28 +1,26 @@
-md-simple-snackbar {
+@import '../core/style/variables';
+@import '../core/style/button-common';
+@import '../core/style/list-common';
+
+$mat-snack-bar-button-margin: 48px !default;
+
+.mat-simple-snackbar {
   display: flex;
   justify-content: space-between;
+  color: white;
+  line-height: 20px;
 }
 
-.md-simple-snackbar-message {
-  box-sizing: border-box;
-  border: none;
-  color: white;
-  font-family: Roboto, 'Helvetica Neue', sans-serif;
-  font-size: 14px;
-  line-height: 20px;
-  outline: none;
-  text-decoration: none;
-  word-break: break-all;
-}
+.mat-simple-snackbar-action {
+  @include mat-button-reset;
 
-.md-simple-snackbar-action {
-  box-sizing: border-box;
-  color: white;
-  float: right;
-  font-weight: 600;
-  line-height: 20px;
-  margin: -5px 0 0 48px;
-  min-width: initial;
-  padding: 5px;
-  text-transform: uppercase;
+  background: none;
+  color: inherit;
+  flex-shrink: 0;
+  margin-left: $mat-snack-bar-button-margin;
+
+  [dir='rtl'] & {
+    margin-right: $mat-snack-bar-button-margin;
+    margin-left: 0;
+  }
 }

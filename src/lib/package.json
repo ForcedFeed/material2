@@ -1,10 +1,11 @@
 {
   "name": "@angular/material",
-  "version": "2.0.0-alpha.9-3",
-  "description": "Angular 2 Material",
-  "main": "./material.umd.js",
-  "module": "./index.js",
-  "typings": "./index.d.ts",
+  "version": "0.0.0-PLACEHOLDER",
+  "description": "Angular Material",
+  "main": "./bundles/material.umd.js",
+  "module": "./@angular/material.es5.js",
+  "es2015": "./@angular/material.js",
+  "typings": "./material.d.ts",
   "repository": {
     "type": "git",
     "url": "https://github.com/angular/material2.git"
@@ -21,11 +22,11 @@
   },
   "homepage": "https://github.com/angular/material2#readme",
   "peerDependencies": {
-    "@angular/core": "^2.0.0",
-    "@angular/common": "^2.0.0",
-    "@angular/http": "^2.0.0"
+    "@angular/cdk": "2.0.0-beta.8",
+    "@angular/core": "^4.0.0",
+    "@angular/common": "^4.0.0"
   },
   "dependencies": {
-    "@types/hammerjs": "^2.0.30"
+    "tslib": "^1.7.1"
   }
 }

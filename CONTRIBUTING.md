@@ -1,6 +1,6 @@
-# Contributing to Angular 2 Material
+# Contributing to Angular Material
 
-We would love for you to contribute to Angular 2 Material and help make it ever better!
+We would love for you to contribute to Angular Material and help make it ever better!
 As a contributor, here are the guidelines we would like you to follow:
 
  - [Code of Conduct](#coc)
@@ -17,10 +17,17 @@ Help us keep Angular open and inclusive. Please read and follow our [Code of Con
 
 ## <a name="question"></a> Got a Question or Problem?
 
-If you have questions about how to *use* Angular Material, please direct them to the 
-[Google Group][material-group] discussion list or [StackOverflow][stackoverflow]. 
-Please note that Angular 2 Material is still in very early development, and the team's capacity 
-to answer usage questions is limited. Community chat is also available on [Gitter][gitter].
+Please do not open issues for general support questions as we want to keep GitHub issues for bug reports and feature requests. You've got much better chances of getting your question answered on [StackOverflow](https://stackoverflow.com/questions/tagged/angular-material2) where the questions should be tagged with tag `angular-material2`.
+
+StackOverflow is a much better place to ask questions since:
+
+- there are thousands of people willing to help on StackOverflow
+- questions and answers stay available for public viewing so your question / answer might help someone else
+- StackOverflow's voting system assures that the best answers are prominently visible.
+
+To save your and our time, we will be systematically closing all the issues that are requests for general support and redirecting people to StackOverflow.
+
+If you would like to chat about the question in real-time, you can reach out via [our gitter channel][gitter].
 
 ## <a name="issue"></a> Found an Issue?
 If you find a bug in the source code or a mistake in the documentation, you can help us by
@@ -33,7 +40,7 @@ You can help the team even more and [submit a Pull Request](#submit-pr) with a f
 ## <a name="feature"></a> Want a Feature?
 You can *request* a new feature by [submitting an issue](#submit-issue) to our [GitHub
 Repository][github]. If you would like to *implement* a new feature, please submit an issue with
-a proposal for your work first, to be sure that we can use it. Angular 2 Material is in very early 
+a proposal for your work first, to be sure that we can use it. Angular Material is in very early 
 stages and we are not ready to accept major contributions ahead of the full release.
 Please consider what kind of change it is:
 
@@ -237,7 +244,7 @@ changes to be accepted, the CLA must be signed. It's a quick process, we promise
 [github]: https://github.com/angular/material2
 [gitter]: https://gitter.im/angular/material2
 [individual-cla]: http://code.google.com/legal/individual-cla-v1.0.html
-[js-style-guide]: https://google.github.io/styleguide/javascriptguide.xml
+[js-style-guide]: https://google.github.io/styleguide/jsguide.html
 [codepen]: http://codepen.io/
 [jsbin]: http://jsbin.com/
 [jsfiddle]: http://jsfiddle.net/

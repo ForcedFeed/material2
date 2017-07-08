@@ -1,15 +1,23 @@
+/**
+ * @license
+ * Copyright Google Inc. All Rights Reserved.
+ *
+ * Use of this source code is governed by an MIT-style license that can be
+ * found in the LICENSE file at https://angular.io/license
+ */
+
 import{
-  AnimationEntryMetadata,
   trigger,
   state,
   style,
   animate,
-  transition
-} from '@angular/core';
+  transition,
+  AnimationTriggerMetadata,
+} from '@angular/animations';
 
 /**
  * Below are all the animations for the md-menu component.
- * Animation duration and timing values are based on Material 1.
+ * Animation duration and timing values are based on AngularJS Material.
  */
 
 
@@ -20,10 +28,10 @@ import{
  *
  * When the menu panel is removed from the DOM, it simply fades out after a brief
  * delay to display the ripple.
- *
- * TODO(kara): switch to :enter and :leave once Mobile Safari is sorted out.
  */
-export const transformMenu: AnimationEntryMetadata = trigger('transformMenu', [
+
+// TODO(kara): switch to :enter and :leave once Mobile Safari is sorted out.
+export const transformMenu: AnimationTriggerMetadata = trigger('transformMenu', [
   state('showing', style({
     opacity: 1,
     transform: `scale(1)`
@@ -44,7 +52,7 @@ export const transformMenu: AnimationEntryMetadata = trigger('transformMenu', [
  * This animation fades in the background color and content of the menu panel
  * after its containing element is scaled in.
  */
-export const fadeInItems: AnimationEntryMetadata = trigger('fadeInItems', [
+export const fadeInItems: AnimationTriggerMetadata = trigger('fadeInItems', [
   state('showing', style({opacity: 1})),
   transition('void => *', [
     style({opacity: 0}),
